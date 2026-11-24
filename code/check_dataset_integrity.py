@@ -1,75 +1,79 @@
-
+"""Validate generated RGB/IR YOLO dataset files and paired sample IDs."""
+import argparse
 from pathlib import Path
 
-# 项目数据集根目录
-ROOT = Path(r"E:\LLVIP_Project\dataset")
 
-DATASETS = [
-    "llvip_ir_721",
-    "llvip_rgb_721"
-]
+def read_list(path):
+    if not path.is_file():
+        raise FileNotFoundError(path)
+    return [Path(x.strip().strip('"')) for x in path.read_text(encoding="utf-8-sig").splitlines() if x.strip()]
 
-SPLITS = ["train", "val", "test"]
 
-for dataset_name in DATASETS:
-    dataset_dir = ROOT / dataset_name
+def main():
+    project_root = Path(__file__).resolve().parents[1]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--data-root", type=Path, default=project_root / "dataset")
+    args = parser.parse_args()
+    roots = {
+        "RGB": args.data_root / "llvip_rgb_721",
+        "IR": args.data_root / "llvip_ir_721",
+    }
+    failed = False
+    split_ids = {}
 
-    print("\n" + "=" * 55)
-    print(f"检查数据集：{dataset_name}")
-    print("=" * 55)
-
-    for split in SPLITS:
-        txt_file = dataset_dir / f"{split}.txt"
-
-        if not txt_file.exists():
-            print(f"[错误] 找不到 {split}.txt")
-            continue
-
-        lines = txt_file.read_text(
-            encoding="utf-8-sig"
-        ).splitlines()
-
-        missing_images = []
-        missing_labels = []
-        empty_labels = []
-
-        for line in lines:
-            if not line.strip():
+    for modality, root in roots.items():
+        print("\n" + "=" * 60)
+        print(f"{modality} dataset: {root}")
+        split_ids[modality] = {}
+        for split in ("train", "val", "test"):
+            list_path = root / f"{split}.txt"
+            try:
+                images = read_list(list_path)
+            except FileNotFoundError:
+                print(f"[ERROR] missing list: {list_path}")
+                failed = True
                 continue
+            ids = set()
+            missing_images, missing_labels, empty_labels = [], [], []
+            for image in images:
+                ids.add(image.stem)
+                if not image.is_file():
+                    missing_images.append(str(image))
+                    continue
+                label = root / "labels" / split / f"{image.stem}.txt"
+                if not label.is_file():
+                    missing_labels.append(str(label))
+                elif label.stat().st_size == 0:
+                    empty_labels.append(str(label))
+            split_ids[modality][split] = ids
+            print(
+                f"{split}: list={len(images)}, missing_images={len(missing_images)}, "
+                f"missing_labels={len(missing_labels)}, empty_labels={len(empty_labels)}"
+            )
+            for title, values in (
+                ("missing image", missing_images),
+                ("missing label", missing_labels),
+                ("empty label", empty_labels),
+            ):
+                for value in values[:3]:
+                    print(f"  {title}: {value}")
+            if missing_images or missing_labels:
+                failed = True
 
-            img_path = Path(line.strip())
+    print("\n" + "=" * 60)
+    print("RGB / IR pairing check")
+    for split in ("train", "val", "test"):
+        rgb = split_ids.get("RGB", {}).get(split, set())
+        ir = split_ids.get("IR", {}).get(split, set())
+        only_rgb, only_ir = rgb - ir, ir - rgb
+        print(f"{split}: RGB={len(rgb)}, IR={len(ir)}, only_RGB={len(only_rgb)}, only_IR={len(only_ir)}")
+        if only_rgb or only_ir or not rgb:
+            failed = True
 
-            if not img_path.is_absolute():
-                img_path = dataset_dir / img_path
+    if failed:
+        raise SystemExit("Dataset integrity check FAILED. Please fix the paths/files above.")
+    print("Dataset integrity check PASSED.")
 
-            if not img_path.is_file():
-                missing_images.append(str(img_path))
-                continue
 
-            # images/train/xxx.jpg
-            # 对应 labels/train/xxx.txt
-            label_path = (
-              img_path.parent.parent.parent
-              / "labels"
-              / img_path.parent.name
-              / f"{img_path.stem}.txt"
-             )
-
-            if not label_path.is_file():
-                missing_labels.append(str(label_path))
-            elif label_path.stat().st_size == 0:
-                empty_labels.append(str(label_path))
-
-        print(f"\n{split}:")
-        print(f"  图片清单数量：{len([x for x in lines if x.strip()])}")
-        print(f"  缺失图片：{len(missing_images)}")
-        print(f"  缺失标签：{len(missing_labels)}")
-        print(f"  空标签：{len(empty_labels)}")
-
-        for item in missing_images[:3]:
-            print("  缺失图片示例：", item)
-
-        for item in missing_labels[:3]:
-            print("  缺失标签示例：", item)
-
-print("\n数据集检查结束！")
+if __name__ == "__main__":
+    main()
