@@ -224,7 +224,8 @@ def main():
 
     # 读取训练集和验证集
     train_dataset = LLVIPFusionDataset(
-        root=args.data_root, split="train", imgsz=args.imgsz
+        root=args.data_root, split="train", imgsz=args.imgsz,
+        geo_aug=True, color_aug=True
     )
     val_dataset = LLVIPFusionDataset(
         root=args.data_root, split="val", imgsz=args.imgsz
