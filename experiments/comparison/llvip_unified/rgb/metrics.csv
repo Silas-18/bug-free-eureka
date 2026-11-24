@@ -1,0 +1,2 @@
+﻿model,images,GT_boxes,predictions,report_conf,Precision,Recall,mAP50,mAP50_95,partial
+RGB,1549,4175,39940,0.25,0.790654,0.802395,0.855300,0.549503,False
