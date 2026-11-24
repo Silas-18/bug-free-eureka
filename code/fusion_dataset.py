@@ -36,7 +36,7 @@ def letterbox(image, labels, size=640):
 
 class LLVIPFusionDataset(Dataset):
     def __init__(self, root, split="train", imgsz=640,
-                 geo_aug=True, color_aug=True):
+                 geo_aug=False, color_aug=False):
         self.root = Path(root)
         self.imgsz = imgsz
         self.augment = split == "train"
