@@ -1,0 +1,2 @@
+﻿images,GT_boxes,predictions,report_conf,Precision,Recall,mAP50,mAP50_95,elapsed_seconds,partial
+1549,4175,10321,0.25,0.896688,0.927186,0.962336,0.696736,28.14,False

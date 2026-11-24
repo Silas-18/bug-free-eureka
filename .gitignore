@@ -1,0 +1,52 @@
+﻿# 原始数据集
+/dataset/
+
+# 备份文件
+/LLVIP_Project_backup/
+/LLVIP_Project_backup.tar.gz
+/backup_baseline/
+
+# 预训练权重
+/pretrained/
+**/weights/
+*.pt
+*.pth
+*.ckpt
+
+# 训练运行缓存
+/runs/
+**/__pycache__/
+*.py[cod]
+*.log
+
+# Python 虚拟环境
+.venv/
+venv/
+env/
+
+# 编辑器配置
+.vscode/
+.idea/
+
+# Jupyter 临时文件
+.ipynb_checkpoints/
+
+# 调试实验，不作为正式结果
+/experiments/fusion/smoke_test/
+/experiments/fusion/stage1_smoke/
+/experiments/fusion/stage2_bs4_fp32/evaluation_smoke/
+
+# 第三方 Ultralytics 源码副本
+# 项目通过依赖安装使用 Ultralytics
+/code/ultralytics-main/
+
+# 常见临时文件
+*.tmp
+*.bak
+.DS_Store
+Thumbs.db
+
+# 本地环境和凭据
+.env
+.env.*
+!.env.example

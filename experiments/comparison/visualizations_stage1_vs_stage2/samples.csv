@@ -1,0 +1,7 @@
+﻿index,image_id,file,gt_count,rgb_predictions_display_conf,ir_predictions_display_conf,fusion1_predictions_display_conf,fusion2_predictions_display_conf
+51,010592,comparison_010592.png,10,11,11,11,12
+228,050327,comparison_050327.png,1,1,1,1,1
+501,081513,comparison_081513.png,1,1,1,0,1
+563,090584,comparison_090584.png,1,1,1,1,1
+1309,210153,comparison_210153.png,2,2,2,2,2
+1518,260189,comparison_260189.png,1,1,1,1,1

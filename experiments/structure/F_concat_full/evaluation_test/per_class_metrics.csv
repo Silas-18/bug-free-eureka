@@ -1,0 +1,2 @@
+﻿class_id,GT_boxes,predictions_at_report_conf,Precision,Recall,AP50,AP50_95
+0,4175,4313,0.902852,0.932695,0.965219,0.699173
