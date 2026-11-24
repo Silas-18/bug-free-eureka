@@ -120,6 +120,9 @@ dataset/LLVIP/
 ```bash
 python code/prepare_rgb.py
 python code/prepare_ir.py
+
+# 检查生成的数据、标签和 RGB/IR 配对
+python code/check_dataset_integrity.py
 ```
 
 脚本会检查 RGB、IR 与 XML 的文件 ID 是否匹配，然后生成：
