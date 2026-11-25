@@ -50,3 +50,11 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+
+# Dataset-derived sample visualizations (do not redistribute LLVIP frames)
+/experiments/baseline/**/train_batch*.jpg
+/experiments/baseline/**/val_batch*.jpg
+/experiments/comparison/visualizations_stage1_vs_stage2/comparison_*.png
+/results/paired_samples.png
+/results/pair_alignment_samples.png
+/results/yolo_visible_test/
