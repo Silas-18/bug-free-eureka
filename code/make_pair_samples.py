@@ -1,10 +1,11 @@
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
-DATA_ROOT = Path(r"E:\LLVIP_Project\dataset\LLVIP")
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+DATA_ROOT = PROJECT_ROOT / "dataset" / "LLVIP"
 VISIBLE_DIR = DATA_ROOT / "visible"
 INFRARED_DIR = DATA_ROOT / "infrared"
-OUT_DIR = Path(r"E:\LLVIP_Project\results")
+OUT_DIR = PROJECT_ROOT / "results"
 
 EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff"}
 IMG_W, IMG_H = 480, 384
@@ -25,15 +26,6 @@ def make_key(path, folder):
 
 
 def load_font(size):
-    for font_path in [
-        r"C:\Windows\Fonts\msyh.ttc",
-        r"C:\Windows\Fonts\simhei.ttf",
-        r"C:\Windows\Fonts\arial.ttf",
-    ]:
-        try:
-            return ImageFont.truetype(font_path, size)
-        except OSError:
-            pass
     return ImageFont.load_default()
 
 

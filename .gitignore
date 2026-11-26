@@ -58,3 +58,6 @@ Thumbs.db
 /results/paired_samples.png
 /results/pair_alignment_samples.png
 /results/yolo_visible_test/
+
+# Generated LLVIP sample previews
+/results/paired_demo.png

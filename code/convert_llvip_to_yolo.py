@@ -9,8 +9,9 @@ import shutil
 # 1. 路径配置
 # ==========================
 
-ROOT = Path(r"E:\LLVIP_Project\dataset\LLVIP")
-OUT = Path(r"E:\LLVIP_Project\dataset\yolo_ready_v1")
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+ROOT = PROJECT_ROOT / "dataset" / "LLVIP"
+OUT = PROJECT_ROOT / "dataset" / "yolo_ready_v1"
 
 VISIBLE = ROOT / "visible"
 INFRARED = ROOT / "infrared"

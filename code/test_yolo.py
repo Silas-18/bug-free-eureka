@@ -3,7 +3,8 @@ from pathlib import Path
 from ultralytics import YOLO
 
 # 1. 数据集路径
-dataset_dir = Path(r"E:\LLVIP_Project\dataset\LLVIP")
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+dataset_dir = PROJECT_ROOT / "dataset" / "LLVIP"
 visible_dir = dataset_dir / "visible"
 
 # 2. 检查数据集
@@ -35,7 +36,7 @@ results = model.predict(
     imgsz=640,
     conf=0.25,
     save=True,
-    project=r"E:\LLVIP_Project\results",
+    project=str(PROJECT_ROOT / "results"),
     name="yolo_visible_test",
     exist_ok=True
 )
@@ -48,5 +49,5 @@ print("图片尺寸：", result.orig_shape)
 print("检测目标数量：", len(result.boxes))
 print("检测类别：", result.boxes.cls.tolist())
 print("检测置信度：", result.boxes.conf.tolist())
-print("结果已保存至：E:\\LLVIP_Project\\results\\yolo_visible_test")
+print("结果已保存至：", PROJECT_ROOT / "results" / "yolo_visible_test")
 print("YOLO GPU推理测试完成！")

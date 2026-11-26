@@ -1,7 +1,7 @@
 
 from pathlib import Path
 
-root = Path(r"E:\LLVIP_Project\dataset\yolo_ready_v1")
+root = Path(__file__).resolve().parents[1] / "dataset" / "yolo_ready_v1"
 
 print("=" * 55)
 print("LLVIP YOLO 标签完整性检查")

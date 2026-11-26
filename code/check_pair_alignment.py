@@ -11,7 +11,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 # 1. 项目路径配置
 # =========================
 
-PROJECT_ROOT = Path(r"E:\LLVIP_Project")
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 RGB_ROOT = PROJECT_ROOT / "dataset" / "llvip_rgb_721"
 IR_ROOT = PROJECT_ROOT / "dataset" / "llvip_ir_721"

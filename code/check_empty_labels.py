@@ -1,7 +1,7 @@
 
 from pathlib import Path
 
-ROOT = Path(r"E:\LLVIP_Project\dataset")
+ROOT = Path(__file__).resolve().parents[1] / "dataset"
 
 datasets = {
     "IR": ROOT / "llvip_ir_721",

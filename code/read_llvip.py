@@ -5,11 +5,12 @@ import xml.etree.ElementTree as ET
 from PIL import Image
 
 # 1. 数据集路径：根据你的实际文件夹设置
-DATA_ROOT = Path(r"E:\LLVIP_Project\dataset\LLVIP")
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+DATA_ROOT = PROJECT_ROOT / "dataset" / "LLVIP"
 VISIBLE_DIR = DATA_ROOT / "visible"
 INFRARED_DIR = DATA_ROOT / "infrared"
 ANNOTATIONS_DIR = DATA_ROOT / "Annotations"
-RESULT_DIR = Path(r"E:\LLVIP_Project\results")
+RESULT_DIR = PROJECT_ROOT / "results"
 
 IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff"}
 
@@ -137,7 +138,7 @@ def main():
     lines = [
         "LLVIP 数据集读取与统计结果",
         "=" * 40,
-        f"数据集路径：{DATA_ROOT}",
+        f"数据集路径：{DATA_ROOT.relative_to(PROJECT_ROOT).as_posix()}",
         f"可见光图像文件数：{len(visible)} 张",
         f"红外图像文件数：{len(infrared)} 张",
         f"匹配图像对数：{len(paired_keys)} 对",

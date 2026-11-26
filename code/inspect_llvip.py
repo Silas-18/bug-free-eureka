@@ -4,7 +4,7 @@ from collections import Counter
 import xml.etree.ElementTree as ET
 
 # 数据集根目录
-root = Path(r"E:\LLVIP_Project\dataset\LLVIP")
+root = Path(__file__).resolve().parents[1] / "dataset" / "LLVIP"
 
 visible_dir = root / "visible"
 infrared_dir = root / "infrared"

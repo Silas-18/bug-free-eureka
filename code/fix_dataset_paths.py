@@ -1,84 +1,78 @@
-
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import shutil
 
-# 两个模态的数据集根目录
-datasets = {
-    "IR": {
-        "root": Path(r"E:\LLVIP_Project\dataset\llvip_ir_721"),
-        "old": "E:/LoadDown/LLVIP/datasets/llvip_ir_721",
-    },
-    "RGB": {
-        "root": Path(r"E:\LLVIP_Project\dataset\llvip_rgb_721"),
-        "old": "E:/LoadDown/LLVIP/datasets/llvip_rgb_721",
-    },
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
+DATASETS = {
+    "IR": PROJECT_ROOT / "dataset" / "llvip_ir_721",
+    "RGB": PROJECT_ROOT / "dataset" / "llvip_rgb_721",
 }
 
-for modality, info in datasets.items():
-    root = info["root"]
-    old_prefix = info["old"]
-    new_prefix = root.as_posix()
+def resolve_image(path_text, root):
+    normalized = path_text.strip().strip('"').replace("\\", "/")
+    if not normalized:
+        return None
 
-    print(f"\n正在检查 {modality} 数据集...")
+    parts = PurePosixPath(normalized).parts
 
-    for filename in ["train.txt", "val.txt", "test.txt"]:
-        txt_file = root / filename
+    if root.name in parts:
+        index = parts.index(root.name)
+        relative = Path(*parts[index + 1:])
+        candidates = [root / relative]
+    elif "images" in parts:
+        index = parts.index("images")
+        relative = Path(*parts[index:])
+        candidates = [root / relative]
+    else:
+        relative = Path(normalized)
+        candidates = [root / relative, root / "images" / relative]
+
+    for candidate in candidates:
+        if candidate.is_file():
+            return candidate.resolve()
+
+    return None
+
+for modality, root in DATASETS.items():
+    print(f"\n正在检查 {modality} 数据集：{root}")
+
+    if not root.is_dir():
+        print("[跳过] 数据集目录不存在，请先准备数据。")
+        continue
+
+    for split in ["train", "val", "test"]:
+        txt_file = root / f"{split}.txt"
 
         if not txt_file.exists():
             print(f"[缺失] {txt_file}")
             continue
 
-        original = txt_file.read_text(encoding="utf-8-sig")
-        lines = original.splitlines()
-
-        updated_lines = []
+        lines = txt_file.read_text(encoding="utf-8-sig").splitlines()
+        updated = []
         missing = []
 
         for line in lines:
-            path_text = line.strip()
-
-            if not path_text:
-                updated_lines.append(line)
+            if not line.strip():
+                updated.append(line)
                 continue
 
-            # 替换旧数据集路径
-            path_text = path_text.replace(
-                old_prefix, new_prefix
-            )
-            path_text = path_text.replace(
-                old_prefix.replace("/", "\\"),
-                new_prefix
-            )
+            image = resolve_image(line, root)
 
-            updated_lines.append(path_text)
-
-            # 检查图片是否真实存在
-            image_path = Path(path_text.replace("/", "\\"))
-            if not image_path.is_absolute():
-                image_path = root / image_path
-
-            if not image_path.is_file():
-                missing.append(path_text)
+            if image is None:
+                missing.append(line)
+            else:
+                updated.append(image.as_posix())
 
         if missing:
-            print(f"[异常] {filename} 有 {len(missing)} 个路径不存在")
+            print(f"[异常] {split}.txt 缺少 {len(missing)} 张图片，未修改。")
             for item in missing[:5]:
-                print("   ", item)
-            print("该文件暂不修改，请检查路径。")
+                print("  ", item)
             continue
 
-        # 修改前自动备份
         backup = txt_file.with_suffix(".txt.bak")
         shutil.copy2(txt_file, backup)
+        txt_file.write_text("\n".join(updated) + "\n", encoding="utf-8")
 
-        # 写入新路径
-        txt_file.write_text(
-            "\n".join(updated_lines) + "\n",
-            encoding="utf-8"
-        )
-
-        print(f"[成功] {filename}")
-        print(f"       图片路径全部检查通过")
-        print(f"       原文件备份：{backup.name}")
+        print(f"[成功] {split}.txt，路径检查通过。")
 
 print("\n路径检查结束！")

@@ -1,7 +1,7 @@
 task: detect
 mode: train
 model: yolov8n.pt
-data: E:/LoadDown/LLVIP/datasets/llvip_ir_721/ir.yaml
+data: dataset/llvip_ir_721/ir.yaml
 epochs: 100
 time: null
 patience: 100

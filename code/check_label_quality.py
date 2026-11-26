@@ -2,7 +2,7 @@
 from pathlib import Path
 import math
 
-PROJECT = Path(r"E:\LLVIP_Project")
+PROJECT = Path(__file__).resolve().parents[1]
 
 DATASETS = {
     "IR": PROJECT / "dataset" / "llvip_ir_721",
@@ -44,13 +44,13 @@ def check_dataset(name, root):
         list_entries[split] = []
 
         for line in lines:
-            image = Path(line.replace("/", "\\"))
-            key = f"{split}/{image.name}"
+            image_name = Path(line.replace("\\", "/")).name
+            key = f"{split}/{image_name}"
             list_entries[split].append(key)
             stats["images"] += 1
 
             label = root / "labels" / split / (
-                image.stem + ".txt"
+                (Path(image_name).stem + ".txt")
             )
 
             if not label.is_file():
